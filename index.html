@@ -5,7 +5,7 @@
     <!-- Ajout de jsPDF -->
  
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion des Produits</title>
+    <title>Produits</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -42,19 +42,52 @@
         <dialog id="addProductDialog" class="futuristic-dialog">
             <form id="addProductForm">
                 <h2>Ajouter un produit</h2>
+                <label for="productName">Nom du produit*</label>
                 <input type="text" id="productName" placeholder="Nom du produit" required>
+                <label for="productPrice">Prix d'achat*</label>
                 <input type="number" id="productPrice" placeholder="Prix d'achat" required>
+                <label for="wholesalePrice">Prix en gros*</label>
                 <input type="number" id="wholesalePrice" placeholder="Prix en gros" required>
+                <label for="semiWholesalePrice">Prix en demi-gros*</label>
                 <input type="number" id="semiWholesalePrice" placeholder="Prix en demi-gros" required>
+                <label for="retailPrice">Prix en détail*</label>
                 <input type="number" id="retailPrice" placeholder="Prix en détail" required>
+                <label for="category">Catégorie*</label>
                 <input type="text" id="category" placeholder="Catégorie" required>
+                <label for="supplier">Fournisseur*</label>
                 <input type="text" id="supplier" placeholder="Fournisseur" required>
                 <div class="dialog-actions">
                     <button type="submit" class="futuristic-btn">Ajouter</button>
-                    <button type="button" id="closeDialog" class="futuristic-btn">Fermer</button>
+                    <button type="button" id="closeDialog" class="futuristic-btn">annuler</button>
                 </div>
             </form>
         </dialog>
+
+        <dialog id="editProductDialog" class="futuristic-dialog">
+            <form id="editProductForm">
+                <h2>Modifier un produit</h2>
+
+                <label for="editProductName">Nom du produit*</label>
+                <input type="text" id="editProductName" placeholder="Nom du produit" required>
+                <label for="editProductPrice">Prix d'achat*</label>
+                <input type="number" id="editProductPrice" placeholder="Prix d'achat" required>
+                <label for="editWholesalePrice">Prix en gros*</label>
+                <input type="number" id="editWholesalePrice" placeholder="Prix en gros" required>
+                <label for="editSemiWholesalePrice">Prix en demi-gros*</label>
+                <input type="number" id="editSemiWholesalePrice" placeholder="Prix en demi-gros" required>
+                <label for="editRetailPrice">Prix en détail*</label>
+                <input type="number" id="editRetailPrice" placeholder="Prix en détail" required>
+                <label for="editCategory">Catégorie*</label>
+                <input type="text" id="editCategory" placeholder="Catégorie" required>
+                <label for="editSupplier">Fournisseur*</label>
+                <input type="text" id="editSupplier" placeholder="Fournisseur" required>
+                <div class="dialog-actions">
+                    <button type="submit" class="futuristic-btn">Modifier</button>
+                    <button type="button" id="closeEditDialog" class="futuristic-btn">annuler</button>
+                </div>
+            </form>
+        </dialog>
+
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script> 
     <script src="script.js"></script>
