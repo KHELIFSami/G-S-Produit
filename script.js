@@ -1,57 +1,99 @@
 const productTableBody = document.getElementById('productTableBody');
 const addProductDialog = document.getElementById('addProductDialog');
+const editProductDialog = document.getElementById('editProductDialog');
 const addProductForm = document.getElementById('addProductForm');
+const editProductForm= document.getElementById('editProductForm')
 const addProductBtn = document.getElementById('addProductBtn');
 const closeDialog = document.getElementById('closeDialog');
+const closeAddDialog = document.getElementById("closeAddDialog");
+const closeEditDialog = document.getElementById("closeEditDialog");
 const searchInput = document.getElementById('search');
 
 let products = JSON.parse(localStorage.getItem('products')) || [];
 let productIdCounter = products.length > 0 ? products[products.length - 1].id + 1 : 1;
 
+saveProductsToLocalStorage(); 
+renderProducts();
+
 // Ouvrir le formulaire d'ajout
 addProductBtn.addEventListener('click', () => {
+    addProductForm.reset();
     addProductDialog.showModal();
 });
 
 // Fermer le formulaire d'ajout
 closeDialog.addEventListener('click', () => {
     addProductDialog.close();
-    addProductForm.reset();
+    
 });
 
 // Ajouter un nouveau produit
 addProductForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    const name = document.getElementById('productName').value.trim();
-    const price = parseFloat(document.getElementById('productPrice').value.trim());
-    const wholesalePrice = parseFloat(document.getElementById('wholesalePrice').value.trim());
-    const semiWholesalePrice = parseFloat(document.getElementById('semiWholesalePrice').value.trim());
-    const retailPrice = parseFloat(document.getElementById('retailPrice').value.trim());
-    const category = document.getElementById('category').value.trim();
-    const supplier = document.getElementById('supplier').value.trim();
-
-    if (!name || !price || !wholesalePrice || !semiWholesalePrice || !retailPrice || !category || !supplier) {
-        alert('Tous les champs obligatoires doivent être remplis.');
-        return;
-    }
 
     const newProduct = {
         id: productIdCounter++,
-        name,
-        price,
-        wholesalePrice,
-        semiWholesalePrice,
-        retailPrice,
-        category,
-        supplier
+        name: document.getElementById('productName').value.trim(),
+        price: document.getElementById('productPrice').value.trim(),
+        wholesalePrice:document.getElementById('wholesalePrice').value.trim(),
+        semiWholesalePrice:document.getElementById('semiWholesalePrice').value.trim(),
+        retailPrice:document.getElementById('retailPrice').value.trim(),
+        category:document.getElementById('category').value.trim(),
+        supplier:document.getElementById('supplier').value.trim()
     };
 
     products.push(newProduct);
     saveProductsToLocalStorage();
     renderProducts();
     addProductDialog.close();
-    addProductForm.reset();
 });
+
+//-------------------------------------------------------------------------------------------------------------------------------
+
+//Ouvrir le formulaire de modification
+function openEditProductDialog(productId) {
+    const product = products.find((p) => p.id === productId);
+    if (!product) return;
+
+    document.getElementById('editProductName').value=product.name;
+    document.getElementById('editProductPrice').value=product.price;
+    document.getElementById('editWholesalePrice').value=product.wholesalePrice;
+    document.getElementById('editSemiWholesalePrice').value=product.semiWholesalePrice;
+    document.getElementById('editRetailPrice').value=product.retailPrice;
+    document.getElementById('editCategory').value=product.category;
+    document.getElementById('editSupplier').value=product.supplier;
+
+    editProductForm.dataset.productId = product.id;
+    editProductDialog.showModal();
+}
+
+//Fermer le formulaire ed modification
+closeEditDialog.addEventListener("click", () => editProductDialog.close());
+
+
+//Modifier un produit
+editProductForm.addEventListener("submit",(e) => {
+e.preventDefault();
+
+    const productId = parseInt(editProductForm.dataset.productId, 10);
+    const product = products.find((p) => p.id === productId);
+    if (!product) return;
+
+    product.name = document.getElementById('editProductName').value.trim();
+    product.price = document.getElementById('editProductPrice').value.trim();
+    product.wholesalePrice = document.getElementById('editWholesalePrice').value.trim();
+    product.semiWholesalePrice = document.getElementById('editSemiWholesalePrice').value.trim();
+    product.retailPrice = document.getElementById('editRetailPrice').value.trim();
+    product.category = document.getElementById('editCategory').value.trim();
+    product.supplier = document.getElementById('editSupplier').value.trim();
+
+    saveProductsToLocalStorage();
+    renderProducts();
+    editProductDialog.close();
+
+});
+
+//-----------------------------------------------------------------------------------------------------------------------------------------
 
 // Afficher les produits
 function renderProducts(filteredProducts = products) {
@@ -68,7 +110,7 @@ function renderProducts(filteredProducts = products) {
             <td>${product.category}</td>
             <td>${product.supplier}</td>
             <td>
-                <button class="futuristic-btn" onclick="editProduct(${product.id})">Modifier</button>
+                <button class="futuristic-btn" onclick="openEditProductDialog(${product.id})">Modifier</button>
                 <button class="futuristic-btn" onclick="deleteProduct(${product.id})">Supprimer</button>
             </td>
         `;
@@ -79,37 +121,6 @@ function renderProducts(filteredProducts = products) {
 // Enregistrer les produits dans le stockage local
 function saveProductsToLocalStorage() {
     localStorage.setItem('products', JSON.stringify(products));
-}
-
-// Modifier un produit
-function editProduct(id) {
-    const product = products.find(p => p.id === id);
-    if (product) {
-        document.getElementById('productName').value = product.name;
-        document.getElementById('productPrice').value = product.price;
-        document.getElementById('wholesalePrice').value = product.wholesalePrice;
-        document.getElementById('semiWholesalePrice').value = product.semiWholesalePrice;
-        document.getElementById('retailPrice').value = product.retailPrice;
-        document.getElementById('category').value = product.category;
-        document.getElementById('supplier').value = product.supplier;
-        addProductDialog.showModal();
-
-        addProductForm.onsubmit = (e) => {
-            e.preventDefault();
-            product.name = document.getElementById('productName').value.trim();
-            product.price = parseFloat(document.getElementById('productPrice').value.trim());
-            product.wholesalePrice = parseFloat(document.getElementById('wholesalePrice').value.trim());
-            product.semiWholesalePrice = parseFloat(document.getElementById('semiWholesalePrice').value.trim());
-            product.retailPrice = parseFloat(document.getElementById('retailPrice').value.trim());
-            product.category = document.getElementById('category').value.trim();
-            product.supplier = document.getElementById('supplier').value.trim();
-
-            saveProductsToLocalStorage();
-            renderProducts();
-            addProductDialog.close();
-            addProductForm.reset();
-        };
-    }
 }
 
 // Supprimer un produit
@@ -167,17 +178,7 @@ document.getElementById('printTableBtn').addEventListener('click', function() {
         printWindow.print();
     });
 
-    // Ajouter un gestionnaire d'événement pour le bouton de téléchargement PDF
-    printWindow.document.getElementById('downloadBtn').addEventListener('click', function() {
-        const { jsPDF } = window.jspdf; // Assurez-vous d'utiliser jsPDF correctement
-        const doc = new jsPDF();
-        
-        // Utilisez la méthode autoTable pour ajouter le tableau dans le PDF
-        doc.autoTable({ html: cloneTable });
-        
-        // Téléchargez le PDF avec un nom
-        doc.save('tableau_produits.pdf');
-    });
+    
 });
 
 
